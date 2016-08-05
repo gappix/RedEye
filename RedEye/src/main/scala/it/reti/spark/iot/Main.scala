@@ -1,6 +1,5 @@
 package it.reti.spark.iot
 
-
 import org.apache.spark.{SparkConf, SparkContext, rdd}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.storage.StorageLevel
@@ -8,10 +7,10 @@ import org.apache.spark.Logging
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Encoders
 
-case class SensorData(  distance: Double, brightness1: Double, brightness2: Double, brightness3: Double, temperature: Double )
-
-
-
+/*########################################## THIS IS THE MAIN START ##################################################*/
+/**
+ *
+ */
 object Main extends Logging{
   
   def main(args: Array[String]) {
@@ -43,7 +42,7 @@ object Main extends Logging{
     /*------------------------------------------------------------------------------------------
      * Each RDD transformations
      *-----------------------------------------------------------------------------------------*/
-    val linesDF =    lines.foreachRDD( rdd => {
+      lines.foreachRDD( rdd => {
          
       
                          //transform json-format bunch of data into a DataFrame
@@ -51,34 +50,39 @@ object Main extends Logging{
                          import sqlContext.implicits._
                          
                          
-                         val dataDF  = sqlContext.read.json(rdd)
+                         val dataDS  = sqlContext.read.json(rdd).as[SensorData].persist()
                          
                   
                          
                          
                          
-                         dataDF.show()
-                         /*<<< INFO >>>*/ logDebug("Received " + dataDF.count.toString() + " sensor data")
+                         dataDS.show()
+                         /*<<< INFO >>>*/ logDebug("Received " + dataDS.count() + " sensor data")
                          
                          
                          
                          //if there is any data -> elaborate and store!
-                         if (dataDF.count() != 0){
+                         if (dataDS.count() != 0){
                              
                            
                              //send DataFrame to average method elaborator
-                             val averagedDataDF = elaborator.computeAvgValues(dataDF)
-                             averagedDataDF.show()
+                             val averagedDataDS = elaborator.computeAvgValues(dataDS.toDF()).as[SensorDataAVG]
+
+
+                             averagedDataDS.show()
                              
                              
                              //send DataFrame to storer method
-                             /*<<< INFO >>>*/  logInfo("Storing data into HIVE.......")
-                             storer.storeDFtoHIVE(averagedDataDF)
-                             /*<<< INFO >>>*/  logInfo("Data stored!")
+                             //storer.storeDFtoHIVE(averagedDataDF)
+                            //storer.storeIntoHBase(averagedDataDS.rdd)
+
                              
                          }
-                         
-                        
+
+
+
+
+                          dataDS.unpersist()
                      })//end foreachRDD
     
     
@@ -89,18 +93,7 @@ object Main extends Logging{
     // Wait for the computation to terminate
     ssc.awaitTermination()
     
-    
-    /*graceful stop 
-    sys.ShutdownHookThread {   
-      
-        /*++ WARN ++*/ logWarning("Gracefully stopping Spark Streaming Application")
-        
-        myReceiver.onStop()
-        ssc.stop(true, true)
-        
-        /*++ WARN ++*/  logWarning("Application gracefully stopped")
-        
-    }*/
+
     
     
     

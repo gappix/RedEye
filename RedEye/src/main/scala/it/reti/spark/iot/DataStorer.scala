@@ -1,6 +1,10 @@
 package it.reti.spark.iot
 
+import org.apache.hadoop.hbase.HBaseConfiguration
+import org.apache.hadoop.hbase.mapred.TableOutputFormat
 import org.apache.spark.sql.DataFrame
+import org.apache.hadoop.mapred.JobConf
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SaveMode
 
 
@@ -15,29 +19,37 @@ class DataStorer {
   val tableName = "iot_avg_data"
   
   
+  /* -------------------------------------/
+   * HBase configuration
+  / --------------------------------------*/
+  val confHBase = HBaseConfiguration.create()
+  confHBase.set(TableOutputFormat.OUTPUT_TABLE, tableName)
+  val jobConfig = new JobConf(confHBase, this.getClass)
+  jobConfig.set("mapreduce.output.fileoutputformat.outputdir", "/user/user01/out")
+  jobConfig.setOutputFormat(classOf[TableOutputFormat])
+  jobConfig.set(TableOutputFormat.OUTPUT_TABLE, tableName)
   
-  //get sqlHIVE context and import methods for DataFrame/RDD conversion 
-  private val sqlContextHIVE = ContextHandler.getSqlContextHIVE
-  import sqlContextHIVE.implicits._
-  sqlContextHIVE.sql("CREATE TABLE IF NOT EXISTS " + tableName + " (timestamp double, distanza float, luminosita1 float, luminosita2 float, luminosita3 float, temperatura float)  STORED AS ORC")
   
   
   
   
   
   
-  /*................................................................................................................*/
+  
+  
+  
+  
+  
+  
+  /*..................................................................................................................*/
   /**
-   * 
+   *
    */
-  def storeDFtoHIVE (dataDF: DataFrame) = {
+  def storeIntoHBase (sensorRDD: RDD[SensorData]) = {
+
+   sensorRDD.map(Sensor.convertToPut).saveAsHadoopDataset(jobConfig)
     
-    
-    dataDF.rdd.saveAsTextFile("/usr/maria_dev/RedEye/tryoutSave.txt")
-    //.write.mode(SaveMode.Append).format("orc").insertInto(tableName)
-    
-    
-  }//end storeDFtoHIVE method //
+  }//end storeIntoHBase method //
   
   
   
