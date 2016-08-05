@@ -5,11 +5,16 @@ import org.apache.spark.sql.SaveMode
 
 
 
-
+/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+/**
+ * 
+ */
 class DataStorer {
   
   
   val tableName = "iot_avg_data"
+  
+  
   
   //get sqlHIVE context and import methods for DataFrame/RDD conversion 
   private val sqlContextHIVE = ContextHandler.getSqlContextHIVE
@@ -17,7 +22,11 @@ class DataStorer {
   sqlContextHIVE.sql("CREATE TABLE IF NOT EXISTS " + tableName + " (timestamp double, distanza float, luminosita1 float, luminosita2 float, luminosita3 float, temperatura float)  STORED AS ORC")
   
   
-  //.................................................................................................................
+  
+  
+  
+  
+  /*................................................................................................................*/
   /**
    * 
    */
@@ -30,4 +39,9 @@ class DataStorer {
     
   }//end storeDFtoHIVE method //
   
-}
+  
+  
+  
+  
+  
+}//end DataStorer class //
