@@ -47,7 +47,7 @@ class DataStorer {
    */
   def storeIntoHBase (sensorRDD: RDD[SensorData]) = {
 
-   sensorRDD.map(Sensor.convertToPut).saveAsHadoopDataset(jobConfig)
+   sensorRDD.map(Sensor.convertToPut(sensor)).saveAsHadoopDataset(jobConfig)
     
   }//end storeIntoHBase method //
   
