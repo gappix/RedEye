@@ -1,7 +1,7 @@
 package it.reti.spark.iot
 
-import org.apache.hadoop.hbase.HBaseConfiguration
-import org.apache.hadoop.hbase.mapred.TableOutputFormat
+//import org.apache.hadoop.hbase.HBaseConfiguration
+//import org.apache.hadoop.hbase.mapred.TableOutputFormat
 import org.apache.spark.sql.DataFrame
 import org.apache.hadoop.mapred.JobConf
 import org.apache.spark.rdd.RDD
@@ -22,6 +22,7 @@ class DataStorer {
   /* -------------------------------------/
    * HBase configuration
   / --------------------------------------*/
+  /*
   val confHBase = HBaseConfiguration.create()
   confHBase.set(TableOutputFormat.OUTPUT_TABLE, tableName)
   val jobConfig = new JobConf(confHBase, this.getClass)
@@ -29,7 +30,7 @@ class DataStorer {
   jobConfig.setOutputFormat(classOf[TableOutputFormat])
   jobConfig.set(TableOutputFormat.OUTPUT_TABLE, tableName)
   
-  
+  */
   
   
   
@@ -47,7 +48,7 @@ class DataStorer {
    */
   def storeIntoHBase (sensorRDD: RDD[SensorData]) = {
 
-   sensorRDD.map(Sensor.convertToPut).saveAsHadoopDataset(jobConfig)
+   //sensorRDD.map(Sensor.convertToPut).saveAsHadoopDataset(jobConfig)
     
   }//end storeIntoHBase method //
   

@@ -1,10 +1,14 @@
 package it.reti.spark.iot
 
 import org.apache.commons.net.ntp.TimeStamp
+
+/*
+ 
 import org.apache.hadoop.hbase.client.Put
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.util.Bytes
 
+*/
 
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -51,7 +55,10 @@ object Sensor extends Serializable {
 
   /*
    * Non sono sicuro di come funzioni.....
-   */ val dataBytes = Bytes.toBytes("data")
+   */
+  
+  
+  //val dataBytes = Bytes.toBytes("data")
 
 
 
@@ -62,6 +69,7 @@ object Sensor extends Serializable {
    * @param sensor rdd to convert to bytes for an HBase storage
    * @return tuple(ImmutablesBytesWritable(rowkey) | put row alias)
    */
+  /*
   def convertToPut(sensor: SensorDataAVG): (ImmutableBytesWritable, Put) = {
 
 
@@ -80,6 +88,6 @@ object Sensor extends Serializable {
 
   } //end convertToPut method //
 
-
+*/
 
 }//end SensorObject
