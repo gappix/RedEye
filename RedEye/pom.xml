@@ -6,22 +6,11 @@
   <name>chapter03App</name>
   <description></description>
   <inceptionYear>2015</inceptionYear>
-  <licenses>
-    <license>
-      <name>Choose License</name>
-      <url>http://....</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <!-- Example definition of a non-restrictive license (MIT)
-   <licenses>
-    <license>
-      <name>MIT License</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-   -->
+
+
+
+
+<!--  ############################## PROPERTIES ############################## -->
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -29,10 +18,25 @@
     <encoding>UTF-8</encoding>
     <scala.tools.version>2.10</scala.tools.version>
     <scala.version>2.10.6</scala.version>
-    <spark.version>1.6.1</spark.version>
+    <spark.version>1.6.0</spark.version>
   </properties>
+  
+  
+  
+  
+  
+<!--  ############################## DEPENDENCIES ############################## -->
 
   <dependencies>
+    <!-- /////////////////////////// JDK tools path  /////////////////////////// -->
+  <dependency>
+   <groupId>jdk.tools</groupId>
+   <artifactId>jdk.tools</artifactId>
+   <version>1.8</version>
+   <scope>system</scope>
+   <systemPath>C:\Program Files (x86)\Java\jdk1.8.0_73\lib\tools.jar</systemPath>
+ </dependency>
+ <!-- /////////////////////////// SPARK DEPENDENCIES /////////////////////////// -->
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
@@ -74,12 +78,13 @@
       <version>${spark.version}</version>
       <scope>provided</scope>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-server -->
-    <dependency>
-        <groupId>org.apache.hbase</groupId>
-        <artifactId>hbase-server</artifactId>
-        <version>1.1.2</version>
-    </dependency>
+ <!--  dependency for spark-hbase connector (requires repository: SparkPackagesRepo) -->	
+  <dependency>
+    <groupId>zhzhan</groupId>
+    <artifactId>shc</artifactId>
+    <version>0.0.11-1.6.1-s_2.10</version>
+  </dependency>
+    
 
     <!-- Test -->
     <dependency>
@@ -109,9 +114,39 @@
 
   </dependencies>
 
+
+
+
+
+
+<!--  ############################## REPOSITORIES ############################## -->
+
+  <repositories>
+	  <repository>
+	    <id>SparkPackagesRepo</id>
+	    <url>http://dl.bintray.com/spark-packages/maven</url>
+	  </repository>
+  </repositories>
+
+
+
+
+
+
+
+<!--  ################################## BUILD ################################# -->
+
   <build>
     <sourceDirectory>src/main/scala</sourceDirectory>
     <testSourceDirectory>src/test/scala</testSourceDirectory>
+    <extensions>
+	<extension>
+	<!-- this extension is required by wagon in order to pass the proxy -->
+	<groupId>org.apache.maven.wagon</groupId>
+	<artifactId>wagon-http-lightweight</artifactId>
+	<version>2.2</version>
+	</extension>
+	</extensions>
     <plugins>
 
       <plugin>
@@ -179,4 +214,5 @@
 
     </plugins>
   </build>
+
 </project>

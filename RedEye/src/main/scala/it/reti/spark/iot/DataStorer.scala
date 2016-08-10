@@ -6,6 +6,9 @@ import org.apache.spark.sql.DataFrame
 import org.apache.hadoop.mapred.JobConf
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SaveMode
+import org.apache.spark.sql.execution.datasources.hbase
+
+
 
 
 
@@ -47,7 +50,7 @@ class DataStorer {
    */
   def storeIntoHBase (sensorRDD: RDD[SensorData]) = {
 
-   sensorRDD.map(Sensor.convertToPut(sensor)).saveAsHadoopDataset(jobConfig)
+  // sensorRDD.map(Sensor.convertToPut()).saveAsHadoopDataset(jobConfig)
     
   }//end storeIntoHBase method //
   
