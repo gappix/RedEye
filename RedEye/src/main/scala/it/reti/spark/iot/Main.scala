@@ -63,26 +63,23 @@ object Main extends Logging{
                          
                          //if there is any data -> elaborate and store!
                          if (dataDS.count() != 0){
-                             
-                           
-                             //send DataFrame to average method elaborator
-                             val averagedDataDS = elaborator.computeAvgValues(dataDS.toDF()).as[SensorDataAVG]
 
+                                 //send DataFrame to average method elaborator
+                                 val averagedDataDS = elaborator.computeAvgValues(dataDS.toDF()).as[SensorDataAVG]
+    
+                                 averagedDataDS.show()
+                                 
+                                 //send DataFrame to storer method
+                                storer.storeIntoHBase(averagedDataDS.toDF())
 
-                             averagedDataDS.show()
-                             
-                             
-                             //send DataFrame to storer method
-                             //storer.storeDFtoHIVE(averagedDataDF)
-                            //storer.storeIntoHBase(averagedDataDS.rdd)
-
-                             
-                         }
+                         }//enf if
 
 
 
 
-                          dataDS.unpersist()
+                         dataDS.unpersist()
+                         
+                         
                      })//end foreachRDD
     
     
