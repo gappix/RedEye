@@ -41,7 +41,7 @@ object ContextHandler extends Logging{
     classOf[Array[Object]],
     classOf[org.apache.spark.unsafe.types.UTF8String]
     ))
-    .set("spark.kryo.registrationRequired","true")
+    //.set("spark.kryo.registrationRequired","true")
     //Spark logger options
     .set("spark.eventLog.enabled","true")
     .set("spark.eventLog.compress","true")

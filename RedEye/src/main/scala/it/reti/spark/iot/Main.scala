@@ -20,7 +20,10 @@ object Main extends Logging{
     }
     val Array(port) = args
     
-      
+     
+    //welcome title printed
+    Title.printTitle
+
     val logHandler =  LogHandler
     val elaborator = new DataElaborator
     val storer = new DataStorer
@@ -50,34 +53,35 @@ object Main extends Logging{
                          import sqlContext.implicits._
                          
                          
-                         val dataDS  = sqlContext.read.json(rdd).as[SensorData].persist()
+                         val dataDF  = sqlContext.read.json(rdd).persist()
                          
                   
                          
+                         dataDF.printSchema()
                          
-                         
-                         dataDS.show()
-                         /*<<< INFO >>>*/ logDebug("Received " + dataDS.count() + " sensor data")
+                         dataDF.show()
+                         /*<<< INFO >>>*/ logDebug("Received " + dataDF.count() + " sensor data")
                          
                          
                          
                          //if there is any data -> elaborate and store!
-                         if (dataDS.count() != 0){
+                         if (dataDF.count() != 0){
 
                                  //send DataFrame to average method elaborator
-                                 val averagedDataDS = elaborator.computeAvgValues(dataDS.toDF()).as[SensorDataAVG]
-    
-                                 averagedDataDS.show()
+                                 val averagedDataDF = elaborator.computeAvgValues(dataDF)
+                                 
+                                 //show results
+                                 averagedDataDF.show()
                                  
                                  //send DataFrame to storer method
-                                storer.storeIntoHBase(averagedDataDS.toDF())
+                                storer.storeIntoHBase(averagedDataDF)
 
                          }//enf if
 
 
 
 
-                         dataDS.unpersist()
+                         dataDF.unpersist()
                          
                          
                      })//end foreachRDD

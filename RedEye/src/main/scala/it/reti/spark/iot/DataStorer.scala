@@ -2,7 +2,6 @@ package it.reti.spark.iot
 
 
 import org.apache.spark.sql.DataFrame
-import org.apache.hadoop.mapred.JobConf
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SaveMode
 import org.apache.spark.sql.execution.datasources.hbase._
@@ -41,15 +40,15 @@ class DataStorer {
   / ----------------------------------------------------------------------------------------------------------------*/
 
   def catalog = s"""{
-                |"table": {"namespace": "default", "name": "$tableName"},
-                |"rowkey": "key",
-                |"columns": {
-                            |"timestamp":   {"cf": "rowkey",  "col": "key",         "type": "string"},
-                            |"distanza":    {"cf": "measure", "col": "distanza",    "type": "float"},
-                            |"luminosita1": {"cf": "measure", "col": "luminosita1", "type": "float"},
-                            |"luminosita2": {"cf": "measure", "col": "luminosita2", "type": "float"},
-                            |"luminosita3": {"cf": "measure", "col": "luminosita3", "type": "float"},
-                            |"temperatura": {"cf": "measure", "col": "temperatura", "type": "float"},
+                |"table":{"namespace": "default", "name": "$tableName"},
+                |"rowkey":"key",
+                |"columns":{
+                            |"timestamp":{"cf": "rowkey",  "col":"key",         "type":"string"},
+                            |"distanza":{"cf": "distanza", "col":"distanza",    "type":"string"},
+                            |"luminosita1":{"cf": "luminosita1", "col":"luminosita1", "type":"string"},
+                            |"luminosita2":{"cf": "luminosita2", "col":"luminosita2", "type":"string"},
+                            |"luminosita3":{"cf": "luminosita3", "col":"luminosita3", "type":"string"},
+                            |"temperatura":{"cf": "temperatura", "col":"temperatura", "type":"string"}
                             |}
                 |}""".stripMargin
   
@@ -71,6 +70,9 @@ class DataStorer {
   def storeIntoHBase (sensorDF: DataFrame) = {
 
     
+    val sqlContext = ContextHandler.getSqlContext
+    import sqlContext.implicits._
+    
   /*
    * In order to write into HBase using the connector you have to use the standard write DataFrame interface
    * providing through the "option" method:
@@ -81,8 +83,7 @@ class DataStorer {
    * and specifying the shc writing format.
    *    
    */
-    sensorDF.write.option(HBaseTableCatalog.tableCatalog, catalog)
-                  .option(HBaseTableCatalog.newTable, "5")
+    sensorDF.write.options(Map(HBaseTableCatalog.tableCatalog -> catalog, HBaseTableCatalog.newTable -> "5"))
                   .format("org.apache.spark.sql.execution.datasources.hbase")
                   .save()
     
